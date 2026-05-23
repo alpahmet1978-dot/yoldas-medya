@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "baslik": "Yoldaş Medya Yayın Hayatına Başladı!",
+    "ozet": "Ana akım medyanın manipülasyonuna karşı halkın ve emeğin sesi artık dijital dünyada.",
+    "icerik": "Yoldaş Medya, yapay zeka teknolojisini arkasına alarak tarafsız, dürüst ve halkçı gazetecilik yapmak üzere kuruldu. Sistem, 100'den fazla haber kaynağını yapay zeka filtrelerinden geçirerek gerçeği açığa çıkarıyor.",
+    "kaynak": "Yoldaş Medya Özel",
+    "orijinal_link": "https://yoldasmedya.vercel.app",
+    "foto_url": "https://picsum.photos/800/400",
+    "tarih": "23.05.2026 17:30",
+    "benzer_haberler": [
+      {"baslik": "Yeni Nesil Gazetecilik ve Yapay Zeka", "link": "#"}
+    ]
+  }
+]
