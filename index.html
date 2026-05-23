@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoldaş Medya | Halkın ve Emeğin Sesi</title>
+    <!-- Modern ve Hızlı Tasarım İçin Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .sol-serit { border-left: 4px solid #dc2626; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+
+    <!-- ÜST MENÜ (NAVBAR) -->
+    <header class="bg-black border-b border-red-700 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold tracking-wider text-red-600 uppercase">
+                🚩 YOLDAŞ MEDYA
+            </h1>
+            <span class="text-xs bg-red-600 text-white font-bold px-2 py-1 rounded animate-pulse">
+                AI CANLI HABER AKIŞI
+            </span>
+        </div>
+    </header>
+
+    <!-- ANA İÇERİK ALANI -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- HABER AKIŞ SOL TARAF (2 Kolon) -->
+            <div id="haberler-alani" class="lg:col-span-2 space-y-8">
+                <!-- Haberler JavaScript ile buraya otomatik yüklenecek -->
+                <p class="text-gray-400">Haberler yükleniyor, lütfen bekleyin...</p>
+            </div>
+
+            <!-- SAĞ TARAF: BİLGİ PANELİ -->
+            <div class="space-y-6">
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-lg">
+                    <h3 class="text-xl font-bold text-red-500 mb-4 sol-serit pl-2">KÜNYE & VİZYON</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Yoldaş Medya; yapay zeka algoritması kullanarak 100+ ana akım medya tekelini (CNN, TRT, Demirören, Show vb.) anlık tarar. Haberleri kopyala-yapıştır yapmaz; manipülasyondan arındırarak halkın çıkarları doğrultusunda yeniden analiz eder.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT: HABERLERİ OTOMATİK ÇEKEN MOTOR -->
+    <script>
+        async function haberleriGetir() {
+            try {
+                // Vercel üzerindeki güncel json dosyasını okur
+                const cevap = await fetch('haberler.json?v=' + new Date().getTime());
+                const haberler = await cevap.json();
+                
+                const haberlerAlani = document.getElementById('haberler-alani');
+                haberlerAlani.innerHTML = ''; // Alanı temizle
+
+                if(haberler.length === 0) {
+                    haberlerAlani.innerHTML = '<p class="text-gray-400">Henüz son dakika haberi düşmedi.</p>';
+                    return;
+                }
+
+                haberler.forEach(haber => {
+                    // Benzer haberleri listeleme tasarımı
+                    let benzerlerHTML = '';
+                    if(haber.benzer_haberler && haber.benzer_haberler.length > 0) {
+                        benzerlerHTML = `
+                            <div class="mt-4 pt-4 border-t border-gray-700">
+                                <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">İlgili / Benzer Gelişmeler:</h5>
+                                <ul class="list-disc list-inside text-sm text-red-400 space-y-1">
+                                    ${haber.benzer_haberler.map(b => `<li><a href="${b.link}" class="hover:underline">${b.baslik}</a></li>`).join('')}
+                                </ul>
+                            </div>`;
+                    }
+
+                    // Haber Kartı Şablonu
+                    const haberKartı = `
+                        <article class="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 shadow-xl hover:border-red-600 transition duration-300">
+                            <img src="${haber.foto_url}" alt="${haber.baslik}" class="w-full h-64 object-cover">
+                            <div class="p-6">
+                                <div class="flex justify-between items-center text-xs text-gray-400 mb-3">
+                                    <span class="bg-gray-700 text-gray-200 px-2 py-0.5 rounded font-bold">${haber.kaynak}</span>
+                                    <span>${haber.tarih}</span>
+                                </div>
+                                <h2 class="text-2xl font-bold text-white mb-3 hover:text-red-500 transition">${haber.baslik}</h2>
+                                <p class="text-gray-400 text-sm font-semibold mb-4 bg-gray-900/50 p-3 rounded border-l-2 border-red-600">${haber.ozet}</p>
+                                <p class="text-gray-300 leading-relaxed text-base">${haber.icerik}</p>
+                                ${benzerlerHTML}
+                            </div>
+                        </article>
+                    `;
+                    haberlerAlani.innerHTML += haberKartı;
+                });
+            } catch (hata) {
+                console.error("Haberler yüklenirken hata oluştu:", hata);
+            }
+        }
+
+        // Sayfa açıldığında çalıştır ve her 5 dakikada bir otomatik yenile
+        haberleriGetir();
+        setInterval(haberleriGetir, 300000);
+    </script>
+</body>
+</html>
